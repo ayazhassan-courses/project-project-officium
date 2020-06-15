@@ -13,10 +13,12 @@ import urllib.request
 import urllib.parse
 import wikipedia
 import pyowm
-import  datetime
 import sys
 from time import strftime
 import logging
+from pygame import mixer
+import time
+import datetime
 
 
 def push(intent, ele):
@@ -77,19 +79,25 @@ def my_command():
     str5 = c6.get()
     push("my_stack", command)
     assistant(command, str1, str2, str3, str4, str5)
-    '''
-    if "previous" in command:
-        assistant(command, str1, str2, str3, str4, str5)
-    else:
-        push(my_stack, command)
-        assistant(command, str1, str2, str3, str4, str5)
-    '''
-def speak(msg):
+
+def speak(msg): #system media player output for longer msgs to give user the option of not listening to the entire thing
     logging.info("Officium communicated the following to the user: {}".format(msg))
     for lines in msg.splitlines():
         tts = gTTS(text=lines , lang="en-uk", slow=False)
         tts.save("output.mp3")
         os.system("start output.mp3")
+
+def talk(audio): #direct aduio output for smaller msgs
+    date_string = datetime.datetime.now().strftime("%d%m%Y%H%M%S")
+    filename = "voice"+date_string+".mp3"
+    logging.info("Officium communicated the following to the user: {}".format(audio))
+    for line in audio.splitlines():
+        text_to_speech = gTTS(text=line, lang='en-uk', slow=False)
+        text_to_speech.save(filename)
+        mixer.init()
+        mixer.music.load(filename)
+        mixer.music.play()
+        time.sleep(1) #necessary otherwise audio wont play.
 
 def assistant(command, str1, str2, str3, str4, str5):
     error_msgs = ["I don't know what you mean",
@@ -105,7 +113,8 @@ def assistant(command, str1, str2, str3, str4, str5):
             print("The domain is {}".format(domain))
             website_url = 'https://' + str(domain)
             webbrowser.open(website_url)
-            speak("The website you requested has been opened")
+            #speak("The website you requested has been opened")
+            talk("The website you requested has been opened")
         else:
             pass
     elif "email" in command:
@@ -127,7 +136,7 @@ def assistant(command, str1, str2, str3, str4, str5):
         mail.login(user_id, user_pwrd)
         mail.sendmail(user_id, recipient, content)
         mail.close()
-        speak("Email has been sent.")
+        talk("Email has been sent.")
 
     elif "google search" in command:
         logging.info(command)
@@ -142,6 +151,7 @@ def assistant(command, str1, str2, str3, str4, str5):
         search = driver.find_element_by_name("q")
         search.send_keys(str(query))
         search.send_keys(Keys.RETURN)
+        talk("Required search has been performed.")
     elif "youtube" in command:
         logging.info(command)
         reg_ex = re.search("youtube (.+)", command)
@@ -151,7 +161,7 @@ def assistant(command, str1, str2, str3, str4, str5):
             html = urllib.request.urlopen("https://www.youtube.com/results?search_query=" + str(query))
             search_results = re.findall(r'href=\"\/watch\?v=(.{11})', html.read().decode())
             webbrowser.open("https://www.youtube.com/watch?v={}".format(search_results[0]))
-            speak("The requested video is being played.")
+            talk("The requested video is being played.")
             pass
     elif "wikipedia" in command:
         logging.info(command)
@@ -163,8 +173,9 @@ def assistant(command, str1, str2, str3, str4, str5):
                 a = str(search.content[:500].encode('utf-8'))
                 blank.insert(0, a[1:])
                 speak(a[1:])
+                #talk(a[1:])
         except Exception as e:
-            speak(e)
+            print(e)
 
     elif "weather" in command:
         logging.info(command)
@@ -186,25 +197,25 @@ def assistant(command, str1, str2, str3, str4, str5):
     elif "time" in command:
         logging.info(command)
         current_time = datetime.datetime.now()
-        speak("The current time is {} hours and {} minutes".format(current_time.hour, current_time.minute))
+        talk("The current time is {} hours and {} minutes".format(current_time.hour, current_time.minute))
     elif "quit" in command:
         logging.info(command)
-        speak("Until next time!")
+        talk("Until next time!")
         logging.info("Program terminated.")
         sys.exit()
     elif "Hello" in command:
         logging.info(command)
         day_time = int(strftime('%H'))
         if day_time < 12:
-            speak("Good Morning. Project Officium at your service.")
+            talk("Good Morning. Project Officium at your service.")
         elif day_time >= 12 and day_time < 18:
-            speak("Good afternoon. Project Officium at your service.")
+            talk("Good afternoon. Project Officium at your service.")
         else:
-            speak("Good evening. Project Officium at your service.")
+            talk("Good evening. Project Officium at your service.")
         logging.info("Project offers salutation to user.")
     else:
         error_msg = random.choice(error_msgs)
-        speak(error_msg)
+        talk(error_msg)
         logging.info("user enters incorrect command - {}".format(command))
     command1.delete(first=0, last=100)
     c2.delete(first=0, last=100)
@@ -267,3 +278,8 @@ b4 = ttk.Button(main, text='Forward', command=lambda: pop2()).grid(row=10, colum
 
 
 main.mainloop()
+
+
+
+
+
