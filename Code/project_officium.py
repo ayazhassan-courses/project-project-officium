@@ -3,27 +3,76 @@
 #Title: Project Officium
 #CS102 - Data Structures and Algorithms
 
+#the internal libraries
 import tkinter as tk
 import tkinter.ttk as ttk
-from ttkthemes import ThemedStyle
-from gtts import gTTS
 import os
 import re
 import webbrowser
 import random
 import smtplib
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-import urllib.request
-import urllib.parse
-import wikipedia
-import pyowm
 import sys
 from time import strftime
 import logging
-from pygame import mixer
 import time
 import datetime
+import urllib.request
+import urllib.parse
+#the external libraries:  citation for library is on top of the respective import statement
+'''
+Title: gTTS (Google Text-to-Speech)
+Author: Pierre Nicholas Durette
+Date: 2016
+Code Version: 2.1.1
+Availability: https://github.com/pndurette/gTTS
+'''
+from gtts import gTTS
+
+'''
+Title: ttkThemes
+Author: The ttkThemes authors
+Date: 2017
+Code Version: 3.1.0
+Availability: https://github.com/TkinterEP/ttkthemes
+'''
+from ttkthemes import ThemedStyle
+
+'''
+Title: pygame (Python Game Development)
+Author: A community project
+Date: 2019
+Code Version: 1.9.6
+Availability: https://www.pygame.org/news
+'''
+from pygame import mixer
+
+'''
+Title: pyowm (Python Open Weather Maps API)
+Author: Claudio Sparpaglione
+Date: 2013
+Code Version: 3.0.0
+Availability:https://github.com/csparpa/pyowm
+'''
+import pyowm
+
+'''
+Tile: Wikipedia API for Python
+Author: Johnathan Goldsmith
+Date: 2013
+Code Version: 1.11.0
+Availability: https://github.com/goldsmith/Wikipedia
+'''
+import wikipedia
+
+'''
+Title: Selenium 
+Author: Simon Stewart; Jim Evans; Alexi Baranstev et al.
+Date: 2015
+Code Version: 3.141.0
+Availability:https://github.com/SeleniumHQ/selenium/
+'''
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
 
 #push function for the stacks
 def push(intent, ele):
